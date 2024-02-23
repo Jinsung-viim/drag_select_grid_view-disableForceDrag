@@ -95,6 +95,7 @@ class DragSelectGridView extends StatefulWidget {
     this.restorationId,
     this.clipBehavior = Clip.hardEdge,
     this.impliesAppBarDismissal = true,
+    this.disableForceDrag = false,
   })  : autoScrollHotspotHeight =
             autoScrollHotspotHeight ?? defaultAutoScrollHotspotHeight,
         scrollController = scrollController ?? ScrollController(),
@@ -187,6 +188,9 @@ class DragSelectGridView extends StatefulWidget {
   /// Refer to [LocalHistoryEntry.impliesAppBarDismissal].
   final bool impliesAppBarDismissal;
 
+  /// 드래그 강제로 막음
+  final bool disableForceDrag;
+  
   @override
   DragSelectGridViewState createState() => DragSelectGridViewState();
 }
@@ -210,7 +214,7 @@ class DragSelectGridViewState extends State<DragSelectGridView>
   bool get isSelecting => selectedIndexes.isNotEmpty;
 
   /// Whether drag gesture is being performed.
-  bool get isDragging =>
+  bool get isDragging => !widget.disableForceDrag &&
       (_selectionManager.dragStartIndex != -1) &&
       (_selectionManager.dragEndIndex != -1);
 
