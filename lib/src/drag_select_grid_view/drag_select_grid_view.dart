@@ -252,9 +252,11 @@ class DragSelectGridViewState extends State<DragSelectGridView>
     return GestureDetector(
       onTapUp: _handleTapUp,
       // onLongPressStart: _handleLongPressStart,
+      // onLongPressMoveUpdate: _handleLongPressMoveUpdate,
+      // onLongPressEnd: _handleLongPressEnd,
       onVerticalDragStart: _handleLongPressStart,
-      onLongPressMoveUpdate: _handleLongPressMoveUpdate,
-      onLongPressEnd: _handleLongPressEnd,
+      onVerticalDragUpdate: _handleLongPressMoveUpdate,
+      onVerticalDragEnd: _handleLongPressEnd,
       behavior: HitTestBehavior.translucent,
       child: IgnorePointer(
         ignoring: isDragging,
