@@ -251,7 +251,8 @@ class DragSelectGridViewState extends State<DragSelectGridView>
     super.build(context);
     return GestureDetector(
       onTapUp: _handleTapUp,
-      onLongPressStart: _handleLongPressStart,
+      // onLongPressStart: _handleLongPressStart,
+      onVerticalDragStart: _handleLongPressStart,
       onLongPressMoveUpdate: _handleLongPressMoveUpdate,
       onLongPressEnd: _handleLongPressEnd,
       behavior: HitTestBehavior.translucent,
