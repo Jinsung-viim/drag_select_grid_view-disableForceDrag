@@ -96,8 +96,7 @@ class DragSelectGridView extends StatefulWidget {
     this.clipBehavior = Clip.hardEdge,
     this.impliesAppBarDismissal = true,
     this.disableForceDrag = false,
-  })  : autoScrollHotspotHeight =
-            autoScrollHotspotHeight ?? defaultAutoScrollHotspotHeight,
+  })  : autoScrollHotspotHeight = autoScrollHotspotHeight ?? defaultAutoScrollHotspotHeight,
         scrollController = scrollController ?? ScrollController(),
         super(key: key);
 
@@ -190,7 +189,7 @@ class DragSelectGridView extends StatefulWidget {
 
   /// 드래그 강제로 막음
   final bool disableForceDrag;
-  
+
   @override
   DragSelectGridViewState createState() => DragSelectGridViewState();
 }
@@ -198,11 +197,10 @@ class DragSelectGridView extends StatefulWidget {
 /// The state for a grid that supports both dragging and tapping to select its
 /// items.
 @visibleForTesting
-class DragSelectGridViewState extends State<DragSelectGridView>
-    with AutoScrollerMixin<DragSelectGridView> {
+class DragSelectGridViewState extends State<DragSelectGridView> with AutoScrollerMixin<DragSelectGridView> {
   final _elements = <SelectableElement>{};
   final _selectionManager = SelectionManager();
-  LongPressMoveUpdateDetails? _lastMoveUpdateDetails;
+  DragUpdateDetails? _lastMoveUpdateDetails;
   LocalHistoryEntry? _historyEntry;
 
   DragSelectGridViewController? get _gridController => widget.gridController;
@@ -214,9 +212,8 @@ class DragSelectGridViewState extends State<DragSelectGridView>
   bool get isSelecting => selectedIndexes.isNotEmpty;
 
   /// Whether drag gesture is being performed.
-  bool get isDragging => !widget.disableForceDrag &&
-      (_selectionManager.dragStartIndex != -1) &&
-      (_selectionManager.dragEndIndex != -1);
+  bool get isDragging =>
+      !widget.disableForceDrag && (_selectionManager.dragStartIndex != -1) && (_selectionManager.dragEndIndex != -1);
 
   @override
   double get autoScrollHotspotHeight => widget.autoScrollHotspotHeight;
@@ -251,12 +248,9 @@ class DragSelectGridViewState extends State<DragSelectGridView>
     super.build(context);
     return GestureDetector(
       onTapUp: _handleTapUp,
-      // onLongPressStart: _handleLongPressStart,
-      // onLongPressMoveUpdate: _handleLongPressMoveUpdate,
-      // onLongPressEnd: _handleLongPressEnd,
-      onVerticalDragStart: _handleLongPressStart,
-      onVerticalDragUpdate: _handleLongPressMoveUpdate,
-      onVerticalDragEnd: _handleLongPressEnd,
+      onHorizontalDragStart: _handleLongPressStart,
+      onHorizontalDragUpdate: _handleLongPressMoveUpdate,
+      onHorizontalDragEnd: _handleLongPressEnd,
       behavior: HitTestBehavior.translucent,
       child: IgnorePointer(
         ignoring: isDragging,
@@ -321,7 +315,7 @@ class DragSelectGridViewState extends State<DragSelectGridView>
     }
   }
 
-  void _handleLongPressStart(LongPressStartDetails details) {
+  void _handleLongPressStart(DragStartDetails details) {
     final pressIndex = _findIndexOfSelectable(details.localPosition);
 
     if (pressIndex != -1) {
@@ -331,7 +325,7 @@ class DragSelectGridViewState extends State<DragSelectGridView>
     }
   }
 
-  void _handleLongPressMoveUpdate(LongPressMoveUpdateDetails details) {
+  void _handleLongPressMoveUpdate(DragUpdateDetails details) {
     if (!isDragging) return;
 
     _lastMoveUpdateDetails = details;
@@ -359,7 +353,7 @@ class DragSelectGridViewState extends State<DragSelectGridView>
     }
   }
 
-  void _handleLongPressEnd(LongPressEndDetails details) {
+  void _handleLongPressEnd(DragEndDetails details) {
     setState(_selectionManager.endDrag);
     stopScrolling();
   }
