@@ -320,7 +320,8 @@ class DragSelectGridViewState extends State<DragSelectGridView> with AutoScrolle
   }
 
   void _handleLongPressStart(DragStartDetails details) {
-    if (!isDragging) return;
+    if (widget.disableForceDrag) return;
+    
     final pressIndex = _findIndexOfSelectable(details.localPosition);
 
     if (pressIndex != -1) {
