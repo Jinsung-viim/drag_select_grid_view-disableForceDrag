@@ -96,6 +96,7 @@ class DragSelectGridView extends StatefulWidget {
     this.clipBehavior = Clip.hardEdge,
     this.impliesAppBarDismissal = true,
     this.disableForceDrag = false,
+    this.dragUpdateAction,
   })  : autoScrollHotspotHeight = autoScrollHotspotHeight ?? defaultAutoScrollHotspotHeight,
         scrollController = scrollController ?? ScrollController(),
         super(key: key);
@@ -189,6 +190,9 @@ class DragSelectGridView extends StatefulWidget {
 
   /// 드래그 강제로 막음
   final bool disableForceDrag;
+
+  /// 드래그 업데이트
+  final VoidCallback? dragUpdateAction;
 
   @override
   DragSelectGridViewState createState() => DragSelectGridViewState();
@@ -316,6 +320,7 @@ class DragSelectGridViewState extends State<DragSelectGridView> with AutoScrolle
   }
 
   void _handleLongPressStart(DragStartDetails details) {
+    if (!isDragging) return;
     final pressIndex = _findIndexOfSelectable(details.localPosition);
 
     if (pressIndex != -1) {
@@ -327,6 +332,7 @@ class DragSelectGridViewState extends State<DragSelectGridView> with AutoScrolle
 
   void _handleLongPressMoveUpdate(DragUpdateDetails details) {
     if (!isDragging) return;
+    if(widget.dragUpdateAction != null) widget.dragUpdateAction!();
 
     _lastMoveUpdateDetails = details;
     final dragIndex = _findIndexOfSelectable(details.localPosition);
@@ -359,29 +365,29 @@ class DragSelectGridViewState extends State<DragSelectGridView> with AutoScrolle
   }
 
   void _updateLocalHistory() {
-    final route = ModalRoute.of(context);
-    if (route == null) return;
+    // final route = ModalRoute.of(context);
+    // if (route == null) return;
 
-    if (isSelecting) {
-      if (_historyEntry == null) {
-        final entry = LocalHistoryEntry(
-          impliesAppBarDismissal: widget.impliesAppBarDismissal,
-          onRemove: () {
-            setState(_selectionManager.clear);
-            _notifySelectionChange();
-            _historyEntry = null;
-          },
-        );
-        route.addLocalHistoryEntry(entry);
-        _historyEntry = entry;
-      }
-    } else {
-      final entry = _historyEntry;
-      if (entry != null) {
-        route.removeLocalHistoryEntry(entry);
-        _historyEntry = null;
-      }
-    }
+    // if (isSelecting) {
+    //   if (_historyEntry == null) {
+    //     final entry = LocalHistoryEntry(
+    //       impliesAppBarDismissal: widget.impliesAppBarDismissal,
+    //       onRemove: () {
+    //         setState(_selectionManager.clear);
+    //         _notifySelectionChange();
+    //         _historyEntry = null;
+    //       },
+    //     );
+    //     route.addLocalHistoryEntry(entry);
+    //     _historyEntry = entry;
+    //   }
+    // } else {
+    //   final entry = _historyEntry;
+    //   if (entry != null) {
+    //     route.removeLocalHistoryEntry(entry);
+    //     _historyEntry = null;
+    //   }
+    // }
   }
 
   int _findIndexOfSelectable(Offset offset) {
